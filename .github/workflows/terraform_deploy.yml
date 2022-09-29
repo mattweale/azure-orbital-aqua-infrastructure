@@ -1,10 +1,10 @@
-name: 'Terraform'
+name: "Terraform"
 
 on: [workflow_dispatch]
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: "Terraform"
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
@@ -20,13 +20,53 @@ jobs:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    
-    - name: Checkout
-      uses: actions/checkout@v2
-      
-    - name: Azure Public IP
-      run: |
-        BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
-        #BUILD_AGENT_IP=($(curl -s http://ipinfo.io/json | jq '.ip' | sed -e 's/^"//' -e 's/"$//'))
-        echo "This GitHub Workflow agent public IP is: $BUILD_AGENT_IP"
+      # Checkout the repository to the GitHub Actions runner
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get Build Agent IP
+        run: |
+          BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
+          #BUILD_AGENT_IP=($(curl -s http://ipinfo.io/json | jq '.ip' | sed -e 's/^"//' -e 's/"$//'))
+          echo "This GitHub Workflow agent public IP is: $BUILD_AGENT_IP"
+
+              # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Terraform Format"
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.3.0
+          tf_actions_subcommand: "fmt"
+          tf_actions_working_dir: "./main"
+
+      - name: "Terraform Init"
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.3.0
+          tf_actions_subcommand: "init"
+          tf_actions_working_dir: "./main"
+
+      - name: "Terraform Validate"
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.3.0
+          tf_actions_subcommand: "validate"
+          tf_actions_working_dir: "./main"
+
+      - name: "Terraform Plan"
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.3.0
+          tf_actions_subcommand: "plan"
+          tf_actions_working_dir: "./main"
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 1.3.0
+          tf_actions_subcommand: "apply"
+          tf_actions_working_dir: "./main"

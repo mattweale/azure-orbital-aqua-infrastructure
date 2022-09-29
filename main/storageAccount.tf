@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "sa_aqua_common" {
 
   network_rules {
     default_action             = "Deny"
-    ip_rules                   = [var.home_ip]
+    ip_rules                   = [var.BUILD_AGENT_IP]
     virtual_network_subnet_ids = [azurerm_subnet.private_vm_subnet.id]
   }
 

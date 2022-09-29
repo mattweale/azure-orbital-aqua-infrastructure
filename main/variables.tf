@@ -48,7 +48,7 @@ variable "rg_name" {
   default     = "rg-persistent"
 }
 
-variable "home_ip" {
+variable "BUILD_AGENT_IP" {
   description = "Variable set by .tfvars to whitelist IP of home public IP for ACLs"
   type        = string
 }
@@ -56,5 +56,5 @@ variable "home_ip" {
 variable "aqua_tools_sa" {
   description = "Variable pulled from GitHub Secret that sets name of Storage Account where AQUA apps are"
   type        = string
-  #default     = "samrwstore"
+  default     = "samrwstore"
 }
