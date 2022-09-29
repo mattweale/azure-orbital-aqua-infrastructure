@@ -20,20 +20,15 @@ jobs:
         shell: bash
 
     steps:
-      # Checkout the repository to the GitHub Actions runner
+    # Checkout the repository to the GitHub Actions runner
 
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Get Build Agent IP
         run: |
-          BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
-          #BUILD_AGENT_IP=($(curl -s http://ipinfo.io/json | jq '.ip' | sed -e 's/^"//' -e 's/"$//'))
+          TV_VAR_BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
           echo "This GitHub Workflow agent public IP is: $BUILD_AGENT_IP"
-
-              # Checkout the repository to the GitHub Actions runner
-      - name: Checkout
-        uses: actions/checkout@v2
 
       - name: "Terraform Format"
         uses: hashicorp/terraform-github-actions@master
