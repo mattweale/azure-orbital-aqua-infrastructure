@@ -27,5 +27,6 @@ jobs:
       
     - name: Azure Public IP
       run: |
-        BUILD_IP=($(curl -s http://ipinfo.io/json | jq '.ip' | sed -e 's/^"//' -e 's/"$//'))
-        echo "This GitHub Workflow agent public IP is: $BUILD_IP"
+        BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
+        #BUILD_AGENT_IP=($(curl -s http://ipinfo.io/json | jq '.ip' | sed -e 's/^"//' -e 's/"$//'))
+        echo "This GitHub Workflow agent public IP is: $BUILD_AGENT_IP"
