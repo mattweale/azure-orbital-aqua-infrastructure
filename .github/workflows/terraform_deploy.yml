@@ -30,6 +30,8 @@ jobs:
         run: |
           pwd
           echo $GITHUB_WORKSPACE
+          cd $GITHUB_WORKSPACE
+          ls
 
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
