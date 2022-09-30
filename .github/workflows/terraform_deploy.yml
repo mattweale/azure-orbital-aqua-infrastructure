@@ -10,10 +10,10 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      AZURE_BACKEND_RG_NAME: ${{ secrets.AZURE_BACKEND_RG_NAME}}
-      AZURE_BACKEND_SA_NAME: ${{ secrets.AZURE_BACKEND_SA_NAME}}
-      AZURE_BACKEND_CONTAINER_NAME: ${{ secrets.AZURE_BACKEND_CONTAINER_NAME}}
-      AZURE_BACKEND_BLOB_NAME: ${{ secrets.AZURE_BACKEND_BLOB_NAME}}
+      AZURE_BACKEND_RG_NAME: "rg-persistent"
+      AZURE_BACKEND_SA_NAME: "samrwtfstate"
+      AZURE_BACKEND_CONTAINER_NAME: "tfstate"
+      AZURE_BACKEND_BLOB_NAME: "aqua.terraform.tfstate"
       TF_VAR_aqua_tools_sa: ${{ secrets.AZURE_AQUA_STORAGE_ACCOUNT }}
       TERRAFORM_DIRECTORY: "main"
     runs-on: ubuntu-latest
@@ -32,14 +32,14 @@ jobs:
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
         run: |
-          cat <<EOT  >> $GITHUB_WORKSPACE/${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
+          cat <<EOT  >> ./{{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
           resource_group_name  = "${{env.AZURE_BACKEND_RG_NAME}}"
           storage_account_name = "${{env.AZURE_BACKEND_SA_NAME}}"
           container_name       = "${{env.AZURE_BACKEND_CONTAINER_NAME}}" 
           key                  = "${{env.AZURE_BACKEND_BLOB_NAME}}"
           EOT
-          chmod +r $GITHUB_WORKSPACE/${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
-          tail $GITHUB_WORKSPACE/${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
+          chmod +r ./${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
+          tail ./${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
 
     # Get the IP Address of the Build Agent
       - name: Get Build Agent IP
