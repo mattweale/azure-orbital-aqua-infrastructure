@@ -24,6 +24,11 @@ jobs:
       run:
         shell: bash
 
+    # Create Terraform Backend Configuration File
+      - name: "Check directory"
+        run: |
+          pwd
+          
     steps:
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
