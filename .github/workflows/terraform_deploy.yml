@@ -32,14 +32,14 @@ jobs:
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
         run: |
-          cat <<EOT  >> ./{{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
+          cat <<EOT  >> $GITHUB_WORKSPACE/${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
           resource_group_name  = "${{env.AZURE_BACKEND_RG_NAME}}"
           storage_account_name = "${{env.AZURE_BACKEND_SA_NAME}}"
           container_name       = "${{env.AZURE_BACKEND_CONTAINER_NAME}}" 
           key                  = "${{env.AZURE_BACKEND_BLOB_NAME}}"
           EOT
-          chmod +r ./${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
-          tail ./${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
+          chmod +r $GITHUB_WORKSPACE/${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
+          tail $GITHUB_WORKSPACE/${{env.TERRAFORM_DIRECTORY}}/azurerm.tfbackend
 
     # Get the IP Address of the Build Agent
       - name: Get Build Agent IP
