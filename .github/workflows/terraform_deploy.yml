@@ -25,13 +25,15 @@ jobs:
         shell: bash
           
     steps:
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+
       # Create Terraform Backend Configuration File
       - name: "Check directory"
         run: |
           pwd
           echo $GITHUB_WORKSPACE
-          cd $GITHUB_WORKSPACE
-          ls
 
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
