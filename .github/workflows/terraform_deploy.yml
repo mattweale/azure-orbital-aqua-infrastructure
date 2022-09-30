@@ -36,6 +36,7 @@ jobs:
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
         run: |
+          echo $GITHUB_WORKSPACE/main
           cat <<EOT  >> ${{env.GITHUB_WORKSPACE}}/main/azurerm.tfbackend
           resource_group_name  = "${{env.AZURE_BACKEND_RG_NAME}}"
           storage_account_name = "${{env.AZURE_BACKEND_SA_NAME}}"
