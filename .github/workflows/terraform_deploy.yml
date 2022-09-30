@@ -29,6 +29,7 @@ jobs:
       - name: "Check directory"
         run: |
           pwd
+          echo $GITHUB_WORKSPACE
 
       # Create Terraform Backend Configuration File
       - name: "Create Terraform Backend Configuration File"
