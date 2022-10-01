@@ -24,6 +24,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Confirm TF SP Environment Variables
+        run: |
+          echo $ARM_CLIENT_ID
+          echo $ARM_CLIENT_SECRET
+          echo $ARM_SUBSCRIPTION_ID
+          echo $ARM_TENANT_ID
+
       - name: "Terraform Format"
         uses: hashicorp/terraform-github-actions@master
         with:
