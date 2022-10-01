@@ -44,8 +44,8 @@ jobs:
       # Get the IP Address of the Build Agent
       - name: Get Build Agent IP
         run: |
-          TV_VAR_BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
-          echo "This GitHub Workflow agent public IP is: $BUILD_AGENT_IP"
+          TF_VAR_BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
+          echo "This GitHub Workflow agent public IP is: $TF_VAR_BUILD_AGENT_IP"
 
       # Format Terraform
       - name: "Terraform Format"
