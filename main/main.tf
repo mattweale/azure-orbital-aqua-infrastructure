@@ -16,7 +16,6 @@ terraform {
     container_name       = "tfstate"
     key                  = "aqua.terraform.tfstate"
   }
-}
 
 provider "azurerm" {
   features {
