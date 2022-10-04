@@ -16,6 +16,7 @@ jobs:
       AZURE_BACKEND_SA_NAME: ${{ secrets.AZURE_BACKEND_SA_NAME }}
       AZURE_BACKEND_CONTAINER_NAME: ${{ secrets.AZURE_BACKEND_CONTAINER_NAME }}
       AZURE_BACKEND_BLOB_NAME: ${{ secrets.AZURE_BACKEND_BLOB_NAME }}
+      TF_BACKEND_CONFIG_DIR: "./main/backend"
     environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -42,18 +43,18 @@ jobs:
         # Create Terraform Backend Config File
       - name: "Create Terraform Backend Config File"
         run: |
-          cat <<EOT  >>  ${{ github.workspace }}/azurerm.tfbackend
+          cat <<EOT  >>  ${{ env.TF_BACKEND_CONFIG_DIR }}/azurerm.tfbackend
           resource_group_name  = "${{ env.AZURE_BACKEND_RG_NAME }}"
           storage_account_name = "${{ env.AZURE_BACKEND_SA_NAME }}"
           container_name       = "${{ env.AZURE_BACKEND_CONTAINER_NAME }}" 
           key                  = "${{ env.AZURE_BACKEND_BLOB_NAME }}"
           EOT
-          chmod +r ${{ github.workspace }}/azurerm.tfbackend
+          chmod +r ${{ env.TF_BACKEND_CONFIG_DIR }}/azurerm.tfbackend
 
         # Echo the backend config file
       - name: "Check the Terraform backend config file"
         run: |
-          tail  ${{ github.workspace }}/azurerm.tfbackend
+          tail  ${{ env.TF_BACKEND_CONFIG_DIR }}/azurerm.tfbackend
 
         # Deploy the Terraform
       - name: "Terraform Format"
