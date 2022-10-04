@@ -39,6 +39,23 @@ jobs:
         run: |
           echo ${{ env.TF_VAR_BUILD_AGENT_IP }}
 
+        # Create Terraform Backend Config File
+      - name: "Create Terraform Backend Config File"
+        run: |
+          cat <<EOT  >>  ${GITHUB_WORKSPACE}/azurerm.tfbackend
+          resource_group_name  = "${{ env.AZURE_BACKEND_RG_NAME }}"
+          storage_account_name = "${{ env.AZURE_BACKEND_SA_NAME }}"
+          container_name       = "${{ env.AZURE_BACKEND_CONTAINER_NAME }}" 
+          key                  = "${{ env.AZURE_BACKEND_BLOB_NAME }}"
+          EOT
+          chmod +r  ${GITHUB_WORKSPACE}/azurerm.tfbackend
+
+        # Echo the backend config file
+      - name: "Check the Terraform backend config file"
+        run: |
+          tail  ${GITHUB_WORKSPACE}/azurerm.tfbackend
+
+        # Deploy the Terraform
       - name: "Terraform Format"
         uses: hashicorp/terraform-github-actions@master
         with:
