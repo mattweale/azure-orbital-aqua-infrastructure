@@ -11,11 +11,11 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      TF_VAR_AQUA_TOOLS_SA: ${{ secrets.AZURE_AQUA_STORAGE_ACCOUNT }}
-      AzurermBackendResourceGroupName: ${{ secrets.AZURE_BACKEND_RG_NAME }}
-      AzurermBackendStorageAccountName: ${{ secrets.AZURE_BACKEND_SA_NAME }}
-      AzurermBackendContainerName: ${{ secrets.AZURE_BACKEND_CONTAINER_NAME }}
-      AzurermBackendBlobName: ${{ secrets.AZURE_BACKEND_BLOB_NAME }}
+      TF_VAR_AQUA_TOOLS_SA: ${{ secrets.AZURE_AQUA_TOOLS_STORAGE_ACCOUNT }}
+      AZURE_BACKEND_RG_NAME: ${{ secrets.AZURE_BACKEND_RG_NAME }}
+      AZURE_BACKEND_SA_NAME: ${{ secrets.AZURE_BACKEND_SA_NAME }}
+      AZURE_BACKEND_CONTAINER_NAME: ${{ secrets.AZURE_BACKEND_CONTAINER_NAME }}
+      AZURE_BACKEND_BLOB_NAME: ${{ secrets.AZURE_BACKEND_BLOB_NAME }}
     environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
