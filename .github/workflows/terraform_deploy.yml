@@ -3,15 +3,19 @@ name: "Terraform"
 on: [workflow_dispatch]
 
 jobs:
-  terraform:
-    name: "Terraform"
+  terraform_deploy:
+    name: "Get Build Agent IP"
+    runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      TF_VAR_aqua_tools_sa: ${{ secrets.AZURE_AQUA_STORAGE_ACCOUNT }}
-    runs-on: ubuntu-latest
+      TF_VAR_AQUA_TOOLS_SA: ${{ secrets.AZURE_AQUA_STORAGE_ACCOUNT }}
+      AzurermBackendResourceGroupName: ${{ secrets.AZURE_BACKEND_RG_NAME }}
+      AzurermBackendStorageAccountName: ${{ secrets.AZURE_BACKEND_SA_NAME }}
+      AzurermBackendContainerName: ${{ secrets.AZURE_BACKEND_CONTAINER_NAME }}
+      AzurermBackendBlobName: ${{ secrets.AZURE_BACKEND_BLOB_NAME }}
     environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -27,8 +31,13 @@ jobs:
       # Get the IP Address of the Build Agent
       - name: Get Build Agent IP
         run: |
-          TF_VAR_BUILD_AGENT_IP=$(curl 'https://api.ipify.org')
-          echo "This GitHub Workflow agent public IP is: $TF_VAR_BUILD_AGENT_IP"
+          echo "BUILD_AGENT_IP=$(curl 'https://api.ipify.org')" >> $GITHUB_ENV
+           echo "This GitHub Workflow agent public IP is: ${{env.BUILD_AGENT_IP}}"
+
+        # Show IP
+      - name: "Echo the IP"
+        run: |
+          echo ${{ env.TF_VAR_BUILD_AGENT_IP }}
 
       - name: "Terraform Format"
         uses: hashicorp/terraform-github-actions@master

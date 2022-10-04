@@ -1,7 +1,7 @@
 #   Import Existing Storage Account [containing IPOPP/RT-STPS] for assigning MI RBAC Scope to. The creation of this is a pre-requisite
 data "azurerm_storage_account" "sa_aqua_tools" {
   resource_group_name = var.rg_name
-  name                = var.aqua_tools_sa
+  name                = var.AQUA_TOOLS_SA
 }
 
 #   Create MI for accessng SA

@@ -53,7 +53,7 @@ variable "BUILD_AGENT_IP" {
   type        = string
 }
 
-variable "aqua_tools_sa" {
+variable "AQUA_TOOLS_SA" {
   description = "Variable pulled from GitHub Secret that sets name of Storage Account where AQUA apps are"
   type        = string
   default     = "samrwstore"
