@@ -32,7 +32,7 @@ jobs:
       - name: Get Build Agent IP
         run: |
           echo "TF_VAR-BUILD_AGENT_IP=$(curl 'https://api.ipify.org')" >> $GITHUB_ENV
-           echo "This GitHub Workflow agent public IP is: ${{env.TV_VAR_BUILD_AGENT_IP}}"
+           echo "This GitHub Workflow agent public IP is: ${{env.TF_VAR_BUILD_AGENT_IP}}"
 
         # Show IP
       - name: "Echo the IP"
