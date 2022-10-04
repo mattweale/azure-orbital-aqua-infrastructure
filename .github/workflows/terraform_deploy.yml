@@ -48,12 +48,12 @@ jobs:
           container_name       = "${{ env.AZURE_BACKEND_CONTAINER_NAME }}" 
           key                  = "${{ env.AZURE_BACKEND_BLOB_NAME }}"
           EOT
-          chmod +r  ${GITHUB_WORKSPACE}/azurerm.tfbackend
+          chmod +r ${{ github.workspace }}/azurerm.tfbackend
 
         # Echo the backend config file
       - name: "Check the Terraform backend config file"
         run: |
-          tail  ${GITHUB_WORKSPACE}/azurerm.tfbackend
+          tail  ${{ github.workspace }}/azurerm.tfbackend
 
         # Deploy the Terraform
       - name: "Terraform Format"
