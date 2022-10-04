@@ -4,7 +4,7 @@ on: [workflow_dispatch]
 
 jobs:
   terraform_deploy:
-    name: "Get Build Agent IP"
+    name: "Deploy Terraform"
     runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
