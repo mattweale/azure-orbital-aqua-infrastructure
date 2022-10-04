@@ -16,7 +16,7 @@ jobs:
       AZURE_BACKEND_SA_NAME: ${{ secrets.AZURE_BACKEND_SA_NAME }}
       AZURE_BACKEND_CONTAINER_NAME: ${{ secrets.AZURE_BACKEND_CONTAINER_NAME }}
       AZURE_BACKEND_BLOB_NAME: ${{ secrets.AZURE_BACKEND_BLOB_NAME }}
-      TF_BACKEND_CONFIG_DIR: "./main/backend"
+      TF_BACKEND_CONFIG_DIR: "./main"
     environment: production
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
