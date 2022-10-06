@@ -1,13 +1,13 @@
 variable "azure_region" {
   type        = string
-  default     = "eastus"
+  default     = "uksouth"
   description = "The Azure Region to deploy this collection of resources to."
 }
 
-variable "azure_failover_region" {
+variable "azure_alt_region" {
   type        = string
-  default     = "ukwest"
-  description = "The failover Azure Region."
+  default     = "westus2"
+  description = "The alternative Azure Region."
 }
 
 variable "tags" {
