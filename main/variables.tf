@@ -1,6 +1,6 @@
 variable "azure_region" {
   type        = string
-  default     = "westus2"
+  default     = "eastus"
   description = "The Azure Region to deploy this collection of resources to."
 }
 
@@ -39,9 +39,9 @@ variable "password" {
 variable "vmsize" {
   description = "Size of the VMs"
   type        = string
-  default     = "Standard_D8pds_v5"
+  #default     = "Standard_D8pds_v5"
   #default     = "Standard_FX4mds"
-  #default     = "Standard_D8s_v5"
+  default = "Standard_D8s_v5"
 }
 
 variable "rg_name" {
