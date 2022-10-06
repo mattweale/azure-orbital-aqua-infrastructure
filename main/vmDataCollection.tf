@@ -3,7 +3,6 @@ resource "azurerm_public_ip" "pip_orbital_data_collection" {
   name                = "${local.base_name}-pip-data-collection-vm-${local.suffix}"
   location            = local.rg_location
   resource_group_name = local.rg_name
-  zones               = [2]
   allocation_method   = "Static"
   domain_name_label   = "aqua-data-collection-vm"
   tags                = var.tags
