@@ -39,7 +39,7 @@ variable "password" {
 variable "vmsize" {
   description = "Size of the VMs"
   type        = string
-  default     = "Standard_Dv4_v4"
+  default     = "Standard_D8s_v4"
   #default     = "Standard_D4s_v5"
 }
 
