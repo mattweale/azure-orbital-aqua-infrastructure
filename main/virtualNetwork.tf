@@ -39,28 +39,3 @@ resource "azurerm_subnet" "orbital_subnet" {
     }
   }
 }
-
-#   Create vNET for Contact Profile
-resource "azurerm_virtual_network" "vnet_contact_profile" {
-  name                = "${local.base_name}-vnet-contact-profile-${local.suffix}"
-  location            = var.azure_alt_region
-  resource_group_name = local.rg_network_name
-  address_space       = [var.virtual_network_address_space]
-  tags                = var.tags
-}
-
-#   Create Subnet for Contact Profile
-resource "azurerm_subnet" "contact_profile_subnet" {
-  name                 = "${local.base_name}-contact-profile-subnet-${local.suffix}"
-  resource_group_name  = local.rg_network_name
-  virtual_network_name = azurerm_virtual_network.vnet_contact_profile.name
-  address_prefixes     = [local.subnet_address_prefixes[0]]
-  delegation {
-    name = "orbital-delegation"
-
-    service_delegation {
-      name    = "Microsoft.Orbital/orbitalGateways"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-    }
-  }
-}
