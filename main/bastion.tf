@@ -1,8 +1,8 @@
 #   Create Public IP
 resource "azurerm_public_ip" "bastion_pip" {
   name                = "${local.base_name}-bastion-pip-${local.suffix}"
-  location            = local.rg_network_location
-  resource_group_name = local.rg_network_name
+  resource_group_name = local.rg_aqua_processing_name
+  location            = local.rg_aqua_processing_loc
   allocation_method   = "Static"
   sku                 = "Standard"
 }
@@ -10,8 +10,8 @@ resource "azurerm_public_ip" "bastion_pip" {
 #   Create Bastion
 resource "azurerm_bastion_host" "bastion" {
   name                = "${local.base_name}-bastion-${local.suffix}"
-  location            = local.rg_network_location
-  resource_group_name = local.rg_network_name
+  resource_group_name = local.rg_aqua_processing_name
+  location            = local.rg_aqua_processing_loc
   sku                 = "Standard"
   tunneling_enabled   = true
 

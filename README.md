@@ -14,20 +14,37 @@
 
 # Overview
 
-This Terraform module deploys the infrastructure components required for [Level 0 & Level 1] processing of raw instrument data from AQUA, a NASA Earth Observation Satellite. This leverages Azure Orbital, a fully managed cloud-based ground station as a service, for ingesting space data directly into Azure.
+In this scenario we will be collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, because of the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land, and water temperatures.
 
-This does not deploy the components for collecting the raw instrument data [the Azure Orbital Components], it is assumed that you have already:
+This Terraform deploys the downstream infrastructure components required to process raw instrument data from AQUA, a NASA Earth Observation Satellite using the Azure Orbital Ground Station (AOGS). This builds on the Azure Orbital Integraton TCP to Blob Component to provide the self-start capability to build the infrastructure required to receive data from the ground station and process across virtual machine compute capability.
 
-* Onboarded onto the Azure Orbital Preview [documentation](https://docs.microsoft.com/en-us/azure/orbital/orbital-preview)
+It is assumed that you have already registered the AQUA Spacecraft:
+
 * Registered a Spacecraft [documentation](https://docs.microsoft.com/en-us/azure/orbital/register-spacecraft)
-* Created a Contact Profile [documentation](https://docs.microsoft.com/en-us/azure/orbital/contact-profile)
+
+You should be familiar with:
+
+* Creating a Contact Profile [documentation](https://docs.microsoft.com/en-us/azure/orbital/contact-profile)
 * Scheduled a Contact [documentation](https://docs.microsoft.com/en-us/azure/orbital/schedule-contact)
 
-In this scenario we are collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, because of the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land, and water temperatures.
+A Contact Profile, storing the link details from Aqua with the Ingress Loadbalancer Endpoint IP, is created as part of the TCP to Blob deployment.
 
-A [single] Hub vNET is deployed with 3 Subnets. 2 Subnets are empty, ready for the deployment of a Bastion Host and VMs to support Common Services. 3 Virtual Machines have been deployed into the same subnet each having been configured using a Custom Script Extension to download and execute scripts for post-deployment configuration and software installation of the components needed:
+TCP to BLOB is a kubernetes service that provides a TCP endpoint to receive Azure Orbital Ground Station (AOGS) satellite downlink data and persists it in Azure BLOB Storage. TCP to Blob can be deployed from here:
 
-* vm-orbital-data-collection - Data Collection VM: VM configured to receive traffic [e.g. netcat] from Orbital.
+* TCP to Blob [documentation](https://github.com/Azure/azure-orbital-integration/tree/main/tcp-to-blob)
+
+Once both TCP to Blob and this Terraform have been deployed the following
+
+A [single] Hub vNET is deployed with 5 Subnets:
+
+* AzureBastionSubnet: Subnet for Bastion.
+* vnet-subnet: Subnet for AKS Nodes.
+* pod-subnet: Subnet for AKS Pods.
+* orbital-subnet: Delegated Subnet for the Orbital Service.
+* aqua-tools-subnet: Subnet for hosting Virtual Machines for Aqua raw data processing.
+
+2 Virtual Machines have been deployed into the aqua-tools-subnet each having been configured using a Custom Script Extension to download and execute scripts for post-deployment configuration and software installation of the components needed:
+
 * vm-orbital-rt-stps - RT-STPS VM: The Real-time Software Telemetry Processing System [RT-STPS v7.0] ingests unsynchronized downlink data telemetry to various formats for further processing.
 * vm-orbital-ipopp - International Planetary Observation Processing Package [IPOPP v4.1 Patch2] processes science data and derivative products [from AQUA and other missions] using Science Processing Algorithms [SPA]
 
@@ -81,13 +98,11 @@ Pre-requisites:
   `az storage account create -n <sa-name> -g <rg-name> -l uksouth --sku Standard_LRS`<br>
   <br>
   `# Create Storage Account Container`<br>
-  `az storage container create -n terraformstate --account-name <sa-name>`<br>
+  `az storage container create -n terraformstate --account-name <sa-name>`<br><br>
 
 The Backend Block tells Terraform where to store the state. This is where the .tfstate file will be stored. Update this block with the detals of the Resource Group, Storage Account and Container Name you have created. The Key is the name of the Blob, in the Container, that is the state file.<br>
 <br>
-<br>
 ![image](images/backend_block.png)
-<br>
 <br>
 
 * This deployment also assumes that you have downloaded the required software from the NASA DRL and stored in a separate Storage Account with a Container for RT-STPS and IPOPP as below:<br>

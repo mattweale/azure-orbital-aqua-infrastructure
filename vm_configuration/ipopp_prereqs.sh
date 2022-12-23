@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================
-# IPOPP Install
+# IPOPP Pre-reqs
 # =============================
 
 #	Check that /datadrive is mounted
@@ -15,8 +15,8 @@ else
 #   Install az copy
 	echo "Now let's install azcopy"
 	cd ~
-	curl "https://azcopyvnext.azureedge.net/release20220315/azcopy_linux_amd64_10.14.1.tar.gz" > azcopy_linux_amd64_10.14.1.tar.gz
-	tar -xvf azcopy_linux_amd64_10.14.1.tar.gz
+	curl "https://azcopyvnext.azureedge.net/release20221005/azcopy_linux_amd64_10.16.1.tar.gz" > azcopy_linux_amd64_10.16.1.tar.gz
+	tar -xvf azcopy_linux_amd64_10.16.1.tar.gz
 	sudo cp ./azcopy_linux_amd64_*/azcopy /usr/bin/
 	sudo chmod 755 /usr/bin/azcopy
 
@@ -37,7 +37,7 @@ else
 #	Install Python3 and Bitstring Package
 	echo "Now let's install Python3 and Requests package"
 	sudo yum install python3 -y
-	sudo yum pip3 install requests
+	sudo python3 -m pip install requests
 
 #   Download IPOPP Software and Patch.
 	echo "Now let's install IPOPP and Patches"
@@ -51,7 +51,7 @@ else
 	azcopy cp "${CONTAINER}DRL-IPOPP_4.1_PATCH_1.tar.gz" "$SOURCE_DIR"
 	azcopy cp "${CONTAINER}DRL-IPOPP_4.1_PATCH_2.tar.gz" "$SOURCE_DIR"
 
- 	cp -a /var/lib/waagent/custom-script/download/0/install_ipopp_prepare.sh /datadrive/install_ipopp_prepare.sh
+ 	cp -a /var/lib/waagent/custom-script/download/0/install_ipopp.sh /datadrive/install_ipopp.sh
 	sudo chown -R adminuser /datadrive
 	sudo chgrp -R adminuser /datadrive
 

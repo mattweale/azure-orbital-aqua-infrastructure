@@ -1,4 +1,4 @@
-resource "azurerm_resource_group" "orbital_aqua_rg" {
-  name     = "${local.base_name}-rg-${local.suffix}"
-  location = var.azure_region
+#   Import Existing Resource Group [containing data collection Front End]
+data "azurerm_resource_group" "rg_aqua_data_collection" {
+  name = var.rg_aqua_data_collection
 }

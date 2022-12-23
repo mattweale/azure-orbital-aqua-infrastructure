@@ -2,20 +2,17 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.18.0"
+      version = "~> 3.36.0"
     }
     null = {
       version = "~> 3.1.1"
     }
   }
-  required_version = ">= 1.3.0"
-  backend "azurerm" {
-    #resource_group_name  = "rg-persistent"
-    #storage_account_name = "samrwtfstate"
-    #container_name       = "tfstate"
-    #key                  = "aqua.terraform.tfstate"
-  }
+
+  required_version = ">= 1.2.6"
+  backend "azurerm" {}
 }
+
 provider "azurerm" {
   features {
     key_vault {

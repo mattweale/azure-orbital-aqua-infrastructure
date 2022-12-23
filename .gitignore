@@ -8,9 +8,6 @@
 # .terraform lock files 
 .terraform.lock.hcl
 
-# .terraform backend config file
-azurerm.tfbackend
-
 # Crash log files
 crash.log
 crash.*.log
@@ -21,6 +18,7 @@ crash.*.log
 # to change depending on the environment.
 *.tfvars
 *.tfvars.json
+*.MIP
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
