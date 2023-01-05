@@ -85,11 +85,11 @@ resource "azurerm_virtual_machine_extension" "cse_vm_orbital_ipopp_config" {
   settings = <<SETTINGS
     {
         "commandToExecute":"export AQUA_NFS_SHARE=${azurerm_storage_account.sa_aqua_common.name} && export AQUA_MI_ID=${azurerm_user_assigned_identity.ua_mi_orbital.client_id} && export AQUA_TOOLS_SA=${data.azurerm_storage_account.sa_aqua_tools.name} && ./main_ipopp.sh > ./logfile.txt exit 0",
-        "fileUris":["https://raw.githubusercontent.com/mattweale/azure-orbital-infrastructure/main/vm_configuration/mount_data_drive.sh",
-                    "https://raw.githubusercontent.com/mattweale/azure-orbital-infrastructure/main/vm_configuration/mount_container.sh",
-                    "https://raw.githubusercontent.com/mattweale/azure-orbital-infrastructure/main/vm_configuration/main_ipopp.sh",
-                    "https://raw.githubusercontent.com/mattweale/azure-orbital-infrastructure/main/vm_configuration/prereqs_ipopp.sh",
-                    "https://raw.githubusercontent.com/mattweale/azure-orbital-infrastructure/main/vm_configuration/install_ipopp.sh"]
+        "fileUris":["https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/mount_data_drive.sh",
+                    "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/mount_container.sh",
+                    "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/main_ipopp.sh",
+                    "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/prereqs_ipopp.sh",
+                    "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/install_ipopp.sh"]
     }
 SETTINGS
   tags     = var.tags
