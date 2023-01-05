@@ -14,18 +14,18 @@
 
 # Overview
 
-In this scenario we will be collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, because of the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land, and water temperatures.
+In this scenario we will be collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, due to the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land, and water temperatures.
 
 This Terraform deploys the downstream infrastructure components required to process raw instrument data from AQUA using the Azure Orbital Ground Station (AOGS). This builds on the Azure Orbital Integraton TCP to Blob Component to provide the self-start capability to build the infrastructure required to receive data from the ground station and process across virtual machine compute capability.
 
 It is assumed that you have already registered the AQUA Spacecraft:
 
-* Registered a Spacecraft [documentation](https://learn.microsoft.com/en-us/azure/orbital/downlink-aqua#create--authorize-a-spacecraft-for-aqua)
+* Register a Spacecraft [documentation](https://learn.microsoft.com/en-us/azure/orbital/downlink-aqua#create--authorize-a-spacecraft-for-aqua)
 
 You should be familiar with:
 
-* Creating a Contact Profile [documentation](https://docs.microsoft.com/en-us/azure/orbital/contact-profile)
-* Scheduled a Contact [documentation](https://docs.microsoft.com/en-us/azure/orbital/schedule-contact)
+* Create a Contact Profile [documentation](https://docs.microsoft.com/en-us/azure/orbital/contact-profile)
+* Schedule a Contact [documentation](https://docs.microsoft.com/en-us/azure/orbital/schedule-contact)
 
 NASA's Earth Observing System Data and Information System (EOSDIS) data products are processed at various levels ranging from Level 0 to Level 4. Level 0 products are raw data at full instrument resolution. At higher levels, the data are converted into more useful parameters and formats.
 
@@ -38,14 +38,6 @@ NASA Real-time Software Telemetry Processing System [RT-STPS] [documentation](ht
 NASA International Planetary Observation Processing Package [IPOPP] [documentation](https://directreadout.sci.gsfc.nasa.gov/?id=dspContent&cid=68) <br>
 NASA Data Processing Levels [documentation](https://www.earthdata.nasa.gov/engage/open-data-services-and-software/data-information-policy/data-levels#:~:text=Level%200%20products%20are%20raw,many%20have%20Level%204%20SDPs.) <br>
 NORAD TRE Empemeris [documentation](https://aqua.nasa.gov/) <br>
-
-Once deployed it should look like this: <br>
-<br>
-<br>
-![image](images/azure_aqua_processing.png)
-<br>
-<br>
-Note that this stores state locally so a [Terraform] backend block will need to be added if required.
 
 # Deployment
 
@@ -78,6 +70,8 @@ Pre-requisites:
 ![image](images/backend_block.png)
 <br>
 
+* Users must be registered with the NASA Direct Readout Labratory (DRL) in order to download the RT-STPS and IPOPP Software. These same credentials are also used by IPOPP to retrieve ancillaries from the DRL’s real-time and archived ancillary repositories during ingestion. You can register [here](https://directreadout.sci.gsfc.nasa.gov/) . <br>
+
 * This deployment assumes that you have downloaded the required software from the NASA DRL and stored in a separate Storage Account with a Container for RT-STPS and IPOPP as below:<br>
 
   `https://[storageaccountname].blob.core.windows.net/rt-stps`<br>
@@ -99,7 +93,7 @@ Pre-requisites:
   `# Check Subscription`<br>
   `az account show` <br>  
 
-* We need to set some variables specific to your deployment of TCP to Blob and the location of the NASA Processing Software. We will use variable definition file called .tvfars. create a file called ".tfvars" in /main and add your details: <br>
+* We need to set some variables specific to your deployment of TCP to Blob and the location of the NASA Processing Software. We will use a variable definition file called .tvfars. Create a file called ".tfvars" in /main and add your details: <br>
 
   `# Your .tfvars file should look something like this`<br>
 <br>
@@ -107,12 +101,12 @@ Pre-requisites:
 <br>
 
   `# .tfvars variable explanation`<br>
-  `BUILD_AGENT_IP: IP Address from where Terraform is running to add to the Storage Account Firewall` <br>
-  `AQUA_TOOLS_RG: Resource Group that contains the Storage Account with the NASA DRL Tools` <br>
-  `AQUA_TOOLS_SA: Storage Account Containing the NASA DRL Tools` <br>
-  `rg_aqua_data_collection: Resource Group deployed by TCP to Blob. We deploy the additional resources for AQUA processing here.` <br>
-  `vnet_aqua_data_collection: vNET deployed by TCP to Blob. We deployed the additional resources for AQUA processing into new Subnets in this vNET.` <br>
-  `sa_data_collection: Storage Account deployed by TCP to Blob. We deploy an additional container here and create a Managed Identity assigned to the VMs with RBAC access` <br>
+  `BUILD_AGENT_IP: IP Address from where Terraform is running to add to the Storage Account Firewall.` <br>
+  `AQUA_TOOLS_RG: Resource Group that contains the Storage Account with the NASA DRL Tools.` <br>
+  `AQUA_TOOLS_SA: Storage Account Containing the NASA DRL Tools.` <br>
+  `rg_aqua_data_collection: Resource Group deployed by TCP to Blob. This deploys the additional resources for AQUA processing here.` <br>
+  `vnet_aqua_data_collection: vNET deployed by TCP to Blob. This deploys the additional resources for AQUA processing into new Subnets in this vNET.` <br>
+  `sa_data_collection: Storage Account deployed by TCP to Blob. This deploys an additional container here and creates a Managed Identity assigned to the VMs with RBAC access.` <br>
 <br>
 
 * Finally, apply the Terraform: <br>
@@ -126,16 +120,31 @@ Pre-requisites:
 
 # Explore and Verify
 
-A Contact Profile, storing the link details from Aqua with the AKS Ingress Loadbalancer Endpoint IP, is created as part of the TCP to Blob deployment.
+Once deployed it should look like this: <br>
+<br>
+<br>
+![image](images/azure_aqua_processing.png)
+<br>
+<br>
 
-Once this Terraform has been applied the following resources will have been deployed:
+The TCP to Blob deployment will have already deployed the following resources:
 
-A [single] Hub vNET is deployed with 5 Subnets:
+* A vNET with:
+  * vnet-subnet: Subnet for AKS Nodes.
+  * pod-subnet: Subnet for AKS Pods.
+  * orbital-subnet: Delegated Subnet for the Orbital Service.
+* An Azure Container Registry.
+* An AKS Cluster.
+* A Storage Sccount and container for storing raw Orbital contact data.
+* TCP to BLOB AKS service that listens for Orbital contact TCP connection and persists the TCP data to Azure BLOB storage.
+* Orbital Contact profile configured with the appropriate endpoint and subnet for TCP to BLOB service.
+* ADO Dashboard providing temporal view of TCP to BLOB activity and AKS cluster health.
+
+Once this Terraform has subsequently been applied the following resources will also have been deployed:
+
+2 Subnets:
 
 * AzureBastionSubnet: Subnet for Bastion.
-* vnet-subnet: Subnet for AKS Nodes (Deployed a part of TCP to Blob).
-* pod-subnet: Subnet for AKS Pods (Deployed a part of TCP to Blob).
-* orbital-subnet: Delegated Subnet for the Orbital Service (Deployed a part of TCP to Blob).
 * aqua-tools-subnet: Subnet for hosting Virtual Machines for Aqua raw data processing.
 
 2 Virtual Machines have been deployed into the aqua-tools-subnet each having been configured using a Custom Script Extension to download and execute scripts for post-deployment configuration and software installation of the components needed:
@@ -143,29 +152,17 @@ A [single] Hub vNET is deployed with 5 Subnets:
 * vm-orbital-rt-stps - RT-STPS VM: The Real-time Software Telemetry Processing System [RT-STPS v7.0] ingests unsynchronized downlink data telemetry to various formats for further processing.
 * vm-orbital-ipopp - International Planetary Observation Processing Package [IPOPP v4.1 Patch2] processes science data and derivative products [from AQUA and other missions] using Science Processing Algorithms [SPA]
 
-A Managed Identity is created and assigned the RBAC Role of Storage Blob Data Contributor to the Storage Account that you create to store the NASA Software. This Managed Identity is attached to both the RT-STPS and IPOPP Virtual Machines that allows them to pull the software during the execution of Custom Script Extensionn. All you need do is update the GitHub Secret [AZURE_AQUA_STORAGE_ACCOUNT] with the name of your Storage Account.
+* A Managed Identity is created and assigned access to the Storage Account that was created to store the NASA Software. This Managed Identity is attached to both the RT-STPS and IPOPP Virtual Machines that allows them to pull the software during the execution of Custom Script Extension.
 
-Note that the Storage Account [saorbital99.blob.core.windows.net] and Event Hub Namespace [orbital.eh.namespace.servicebus.windows.net] URL have to be globally unique so you MAY need to change their name in the appropriate terraform file [storageaccount.tf and eventhub.tf].
+* A Container (shared) is added to the Storage Account that was created by TCP to Blob.
 
-Deployment takes approximately 45 minutes, the vasy majority of this being the installation of IPOPP.
+* A Managed Identity is created and assigned access to the Storage Account that was created during the deployment of TCP to Blob. This Managed Identity is attached to both the RT-STPS and IPOPP Virtual Machines that allows them mount both Containers after deployment.
 
-Once deployed you need to update the Orbital Contact Profile with the IP Address of the Endpoint [VM] to which Orbital streams the payload, making note of the port. You also need to update the demodulationConfiguration, replacing X.X.X.X with the IP Address of your Endpoint. The demodulationConfiguration Key:Value value is [here](./json/demodulationConfiguration.txt).<br>
-<br>
-<br>
-![image](images/azure_orbital_contact_profile.png)
-<br>
-<br>
-Once the Contact Profile has been updated, make sure that the Satellite Ephemeris is current and then schedule a Contact.
+* A Storage Account is created and NFS mounted (/nfsdata) on both VMs as part of the deployment.
 
-After the Terraform deployment concludes successfully, the following has been deployed into your subscription:
+* An NSG attached to the aqua-tools-subnet with Inbound Traffic Allowed for 3389. Bastion should be used for SSH. Currently Bastion defaults to 32bit colour depth which is
 
-* A resource group named **rg-orbital** containing:
-* One vNET containing three subnets, AzureBastionSubnet, services-subnet and endpoint-subnet;
-* Three VMs, vm-orbital-data-collection, vm-orbital-rt-stps and vm-orbital-ipopp;
-* Data disk [256GB] attached and mounted to each VM at /datadrive;
-* A Storage Account **saorbital** with Containers raw-data, rt-stps, ipopp and shared;
-* Container [saorbital99/shared] NFS Mounted to each VM at /nfsdata;
-* An NSG attached to the endpoint-subnet with Inbound Traffic Allowed for 22, 3389 and 50001;
+Deployment takes approximately 45 minutes, the vast majority of this being the installation of IPOPP.
 
 # Example Output
 
@@ -176,11 +173,11 @@ An example of the output that can be produced can be seen in the image below, a 
 <br>
 <br>
 
-# Backlog
+# Post Deployment Actions
 
-A number of things need to be improved.......
+A number of things that need to be done, or consider doing post deployment.
 
-* Use fstab for making mounts permanent
-* Query the GitHub actions runner's public IP addresses to dynamically build the whitelist for the Storage Firewall
-* Allow Storage Account name and Event Hub Namespace Name to be passed via a GitHub Secret
+* A .netrc file containing NASA DRL credentials is required in the IPOPP user home directory.
+* Use /etc/fstab to make /datadrive and /nfsdata persistent after reboot.
+* Use blobuse2 to mount /raw-contact-data and /shared Containers [documentation](https://github.com/Azure/azure-storage-fuse).
 * More elegant shell scripts all round :see_no_evil:
