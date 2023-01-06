@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#	=============================
-#	NFS Mount Container
-#	=============================
+#	==============================
+#	NFS Mount Container to /shared
+#	==============================
     echo "Mounting the Aqua Container: ${AQUA_NFS_SHARE} to /nfsdata"
    
 #	Check Linux Distro for nfs utils install
@@ -35,3 +35,5 @@
     fi
 
 sudo chmod -R 777 /nfsdata
+
+echo ${AQUA_TOOLS_SA}.blob.core.windows.net:/${AQUA_TOOLS_SA}/shared  /nfsdata    nfs defaults,sec=sys,vers=3,nolock,proto=tcp,nofail    0 0 >> /etc/fstab 

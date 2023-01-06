@@ -95,7 +95,7 @@ Pre-requisites:
 
 * We need to set some variables specific to your deployment of TCP to Blob and the location of the NASA Processing Software. We will use a variable definition file called .tvfars. Create a file called ".tfvars" in /main and add your details: <br>
 
-  `# Your .tfvars file should look something like this`<br>
+  `# Your .tfvars file should look something like this:`<br>
 <br>
 ![image](images/tfvars_file.png)
 <br>
@@ -142,8 +142,7 @@ The TCP to Blob deployment will have already deployed the following resources:
 
 Once this Terraform has subsequently been applied the following resources will also have been deployed:
 
-2 Subnets:
-
+* 2 Subnets with:
 * AzureBastionSubnet: Subnet for Bastion.
 * aqua-tools-subnet: Subnet for hosting Virtual Machines for Aqua raw data processing.
 
