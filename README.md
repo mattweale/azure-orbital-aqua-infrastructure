@@ -14,7 +14,7 @@
 
 # Overview
 
-In this scenario we will be collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, due to the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land, and water temperatures.
+In this scenario we will be collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, due to the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land and water temperatures.
 
 This Terraform deploys the downstream infrastructure components required to process raw instrument data from AQUA using the Azure Orbital Ground Station (AOGS). This builds on the Azure Orbital Integraton TCP to Blob Component to provide the self-start capability to build the infrastructure required to receive data from the ground station and process across virtual machine compute capability.
 
@@ -27,7 +27,7 @@ You should be familiar with:
 * Create a Contact Profile [documentation](https://docs.microsoft.com/en-us/azure/orbital/contact-profile)
 * Schedule a Contact [documentation](https://docs.microsoft.com/en-us/azure/orbital/schedule-contact)
 
-NASA's Earth Observing System Data and Information System (EOSDIS) data products are processed at various levels ranging from Level 0 to Level 4. Level 0 products are raw data at full instrument resolution. At higher levels, the data are converted into more useful parameters and formats.
+NASA's Earth Observing System Data and Information System (EOSDIS) data products are processed at various levels ranging from Level 0 to Level 4. Level 0 products are raw data at full instrument resolution. At higher levels, the data is converted into more useful parameters and formats.
 
 Some useful documentation:
 
@@ -65,14 +65,15 @@ Pre-requisites:
   `# Create Storage Account Container`<br>
   `az storage container create -n tfstate --account-name <sa-name>`<br><br>
 
-* The Backend Block tells Terraform where to store the state. This is where the .tfstate file will be stored. This block should contain the detals of the Resource Group, Storage Account and Container Name you have created. The Key is the name of the Blob, in the Container, that is the state file. Create a file called "azurerm.tfbackend" in /main and add your specific backend details like below:<br>
+* The Backend Block tells Terraform where to store the state. This is where the .tfstate file will be stored. This block should contain the detals of the Resource Group, Storage Account and Container Name you have created. The Key is the name of the Blob, in the Container, this is the state file. Create a file called "azurerm.tfbackend" in /main and add your specific backend details like below:
+<br>
 <br>
 ![image](images/backend_block.png)
 <br>
-
+<br>
 * Users must be registered with the NASA Direct Readout Labratory (DRL) in order to download the RT-STPS and IPOPP Software. These same credentials are also used by IPOPP to retrieve ancillaries from the DRL’s real-time and archived ancillary repositories during ingestion. You can register [here](https://directreadout.sci.gsfc.nasa.gov/) . <br>
 
-* This deployment assumes that you have downloaded the required software from the NASA DRL and stored in a separate Storage Account with a Container for RT-STPS and IPOPP as below:<br>
+* This deployment assumes that you have downloaded the required software from the NASA DRL and stored it in a separate Storage Account (in the same Subscription) with a Container for each of RT-STPS and IPOPP as below:<br>
 
   `https://[storageaccountname].blob.core.windows.net/rt-stps`<br>
   `/RT-STPS_7.0.tar.gz`<br>
@@ -93,11 +94,13 @@ Pre-requisites:
   `# Check Subscription`<br>
   `az account show` <br>  
 
-* We need to set some variables specific to your deployment of TCP to Blob and the location of the NASA Processing Software. We will use a variable definition file called .tvfars. Create a file called ".tfvars" in /main and add your details: <br>
+* We need to set some variables specific to your deployment of TCP to Blob, and the location of the NASA Processing Software. We will use a variable definition file called .tvfars. Create a file called ".tfvars" in /main and add your details: <br>
 
-  `# Your .tfvars file should look something like this:`<br>
+  `# Your .tfvars file should look something like this:`
+<br>
 <br>
 ![image](images/tfvars_file.png)
+<br>
 <br>
 
   `# .tfvars variable explanation`<br>
@@ -135,16 +138,16 @@ The TCP to Blob deployment will have already deployed the following resources:
   * orbital-subnet: Delegated Subnet for the Orbital Service.
 * An Azure Container Registry.
 * An AKS Cluster.
-* A Storage Sccount and container for storing raw Orbital contact data.
-* TCP to BLOB AKS service that listens for Orbital contact TCP connection and persists the TCP data to Azure BLOB storage.
+* A Storage Account and container for storing raw Orbital contact data.
+* TCP to BLOB AKS service that listens for Orbital contact TCP connections and persists the TCP data to Azure BLOB storage.
 * Orbital Contact profile configured with the appropriate endpoint and subnet for TCP to BLOB service.
 * ADO Dashboard providing temporal view of TCP to BLOB activity and AKS cluster health.
 
 Once this Terraform has subsequently been applied the following resources will also have been deployed:
 
 * 2 Subnets with:
-* AzureBastionSubnet: Subnet for Bastion.
-* aqua-tools-subnet: Subnet for hosting Virtual Machines for Aqua raw data processing.
+  * AzureBastionSubnet: Subnet for Bastion.
+  * aqua-tools-subnet: Subnet for hosting Virtual Machines for Aqua raw data processing.
 
 2 Virtual Machines have been deployed into the aqua-tools-subnet each having been configured using a Custom Script Extension to download and execute scripts for post-deployment configuration and software installation of the components needed:
 
@@ -155,13 +158,13 @@ Once this Terraform has subsequently been applied the following resources will a
 
 * A Container (shared) is added to the Storage Account that was created by TCP to Blob.
 
-* A Managed Identity is created and assigned access to the Storage Account that was created during the deployment of TCP to Blob. This Managed Identity is attached to both the RT-STPS and IPOPP Virtual Machines that allows them mount both Containers after deployment.
+* A Managed Identity is created and assigned access to the Storage Account that was created during the deployment of TCP to Blob. This Managed Identity is attached to both the RT-STPS and IPOPP VMs that allows them both to mount Containers after deployment.
 
 * A Storage Account is created and NFS mounted (/nfsdata) on both VMs as part of the deployment.
 
 * An NSG attached to the aqua-tools-subnet with Inbound Traffic Allowed for 3389.
 
-* A Bastion instance, this should be used for SSH and RDP access into the RT-STPS VM. Currently Bastion defaults to 32bit colour depth which is not supported by the IPOPP Dashbaord.
+* A Bastion instance, this should be used for SSH and RDP access into the RT-STPS VM. Currently Bastion defaults to 32bit colour depth which is not supported by the IPOPP Dashbaord so use an RDP Client.
 
 Deployment takes approximately 45 minutes, the vast majority of this being the installation of IPOPP.
 
@@ -176,9 +179,7 @@ An example of the output that can be produced can be seen in the image below, a 
 
 # Post Deployment Actions
 
-A number of things that need to be done, or consider doing post deployment.
+A couple of things are yet to be automated so need to be done manually:
 
 * A .netrc file containing NASA DRL credentials is required in the IPOPP user home directory.
-* Use /etc/fstab to make /datadrive and /nfsdata persistent after reboot.
-* Use blobuse2 to mount /raw-contact-data and /shared Containers [documentation](https://github.com/Azure/azure-storage-fuse).
-* More elegant shell scripts all round :see_no_evil:
+* Use blobuse2 to mount /raw-contact-data and /shared containers deployed as part of TCP to Blob [documentation](https://github.com/Azure/azure-storage-fuse).
