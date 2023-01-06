@@ -170,4 +170,4 @@ An example of the output that can be produced can be seen in the image below, a 
 A couple of things are yet to be automated so need to be done manually:
 
 * A .netrc file containing NASA DRL credentials is required in the IPOPP user home directory.
-* Use blobuse2 to mount /raw-contact-data and /shared containers deployed as part of TCP to Blob [documentation](https://github.com/Azure/azure-storage-fuse).
+* Use blobfuse2 to mount /raw-contact-data and /shared containers deployed as part of TCP to Blob [documentation](https://github.com/Azure/azure-storage-fuse).
