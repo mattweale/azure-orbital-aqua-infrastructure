@@ -160,7 +160,9 @@ Once this Terraform has subsequently been applied the following resources will a
 
 * A Storage Account is created and NFS mounted (/nfsdata) on both VMs as part of the deployment.
 
-* An NSG attached to the aqua-tools-subnet with Inbound Traffic Allowed for 3389. Bastion should be used for SSH. Currently Bastion defaults to 32bit colour depth which is
+* An NSG attached to the aqua-tools-subnet with Inbound Traffic Allowed for 3389.
+
+* A Bastion instance, this should be used for SSH and RDP access into the RT-STPS VM. Currently Bastion defaults to 32bit colour depth which is not supported by the IPOPP Dashbaord.
 
 Deployment takes approximately 45 minutes, the vast majority of this being the installation of IPOPP.
 
