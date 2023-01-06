@@ -35,6 +35,9 @@
 	cp $INSTALL_DIR/drl/SPA/modisl1db/algorithm/DRLshellscripts/sample.netrc $HOME/.netrc
 # 	Next edit the $HOME/.netrc file to replace “yourlogin” and “yourpassword” with your EarthData portal credentials.
 
+# 	Update .bashrc with LD_LIBRARY_PATH for RDP
+	echo export LD_LIBRARY_PATH=/datadrive/IPOPP/drl/standalone/lib >> .bashrc
+
 #	Install python request package
 	python3 -m pip install requests
 

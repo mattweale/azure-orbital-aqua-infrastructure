@@ -36,4 +36,4 @@
 
 sudo chmod -R 777 /nfsdata
 
-echo ${AQUA_TOOLS_SA}.blob.core.windows.net:/${AQUA_TOOLS_SA}/shared  /nfsdata    nfs defaults,sec=sys,vers=3,nolock,proto=tcp,nofail    0 0 >> /etc/fstab 
+echo ${AQUA_NFS_SHARE}.blob.core.windows.net:/${AQUA_NFS_SHARE}/shared  /nfsdata    nfs defaults,sec=sys,vers=3,nolock,proto=tcp,nofail    0 0 >> /etc/fstab 
