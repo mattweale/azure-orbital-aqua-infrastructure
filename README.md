@@ -110,7 +110,7 @@ Pre-requisites:
 * Finally, apply the Terraform:  
 
   `# Initialise and apply the Terraform`  
-    `cd main`
+    `cd main`  
     `terraform init -backend-config=azurerm.tfbackend`  
     `terraform plan -var-file=".tfvars"`  
     `terraform apply -var-file=".tfvars -auto-approve"`  
