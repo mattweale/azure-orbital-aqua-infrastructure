@@ -1,18 +1,18 @@
 # **Azure Orbital - Infrastructure for Level 0 and Level 1 Processing of AQUA EOS Satellite Data**
 
-# Contents
+## Contents
 
 [Overview](#overview)
 
 [Deployment](#deployment)
 
-[Explore and Verify](#Explore-and-Verify)
+[Explore and Verify](#explore-and-verify)
 
-[Example Output](#Example-Output)
+[Example Output](#example-output)
 
-[Backlog](#backlog)
+[Post Deployment](#post-deployment-actions)
 
-# Overview
+### Overview
 
 In this scenario we will be collecting raw instrument data from a NASA Earth Observation Satellite, AQUA. It is named Aqua, Latin for water, due to the large amount of information that the mission is collecting about the Earth's water cycle, including evaporation from the oceans, water vapor in the atmosphere, clouds, precipitation, soil moisture, sea ice, land ice, and snow cover on the land and ice. Additional variables also being measured by Aqua include radiative energy fluxes, aerosols, vegetation cover on the land, phytoplankton and dissolved organic matter in the oceans, and air, land and water temperatures.
 
@@ -31,15 +31,15 @@ NASA's Earth Observing System Data and Information System (EOSDIS) data products
 
 Some useful documentation:
 
-Azure Orbital [documentation](https://docs.microsoft.com/en-us/azure/orbital/) <br>
-NASA AQUA Mission [documentation](https://aqua.nasa.gov/) <br>
-NASA Direct Readout Labratory [DRL] [documentation](https://directreadout.sci.gsfc.nasa.gov/) <br>
-NASA Real-time Software Telemetry Processing System [RT-STPS] [documentation](https://directreadout.sci.gsfc.nasa.gov/?id=dspContent&cid=69) <br>
-NASA International Planetary Observation Processing Package [IPOPP] [documentation](https://directreadout.sci.gsfc.nasa.gov/?id=dspContent&cid=68) <br>
-NASA Data Processing Levels [documentation](https://www.earthdata.nasa.gov/engage/open-data-services-and-software/data-information-policy/data-levels#:~:text=Level%200%20products%20are%20raw,many%20have%20Level%204%20SDPs.) <br>
-NORAD TRE Empemeris [documentation](https://aqua.nasa.gov/) <br>
+Azure Orbital [documentation](https://docs.microsoft.com/en-us/azure/orbital/)  
+NASA AQUA Mission [documentation](https://aqua.nasa.gov/)  
+NASA Direct Readout Labratory [DRL] [documentation](https://directreadout.sci.gsfc.nasa.gov/)  
+NASA Real-time Software Telemetry Processing System [RT-STPS] [documentation](https://directreadout.sci.gsfc.nasa.gov/?id=dspContent&cid=69)  
+NASA International Planetary Observation Processing Package [IPOPP] [documentation](https://directreadout.sci.gsfc.nasa.gov/?id=dspContent&cid=68)  
+NASA Data Processing Levels [documentation](https://www.earthdata.nasa.gov/engage/open-data-services-and-software/data-information-policy/data-levels#:~:text=Level%200%20products%20are%20raw,many%20have%20Level%204%20SDPs.)  
+NORAD TRE Empemeris [documentation](https://aqua.nasa.gov/)  
 
-# Deployment
+### Deployment
 
 Pre-requisites:
 
@@ -50,85 +50,76 @@ Pre-requisites:
   NB: You may need to edit the aks.bicep file to change the vmSize and availbilityZones for the aksCluster depending on Regional SKU availability
       (...../azure-orbital-integration/tcp-to-blob/deploy/bicep/aks.bicep).
 
-* Clone the repository: <br>
+* Clone the repository:  
 
-  `git clone https://github.com/mattweale/azure-orbital-aqua-infrastructure.git`<br>
+  `git clone https://github.com/mattweale/azure-orbital-aqua-infrastructure.git`  
 
-* Terraform uses a state file to manage the state of the resources deployed. In this deployment we will store the state file remotely, in Azure; specficically in a Storage Account Container called: tfstate. We first need to create those resources:<br>
+* Terraform uses a state file to manage the state of the resources deployed. In this deployment we will store the state file remotely, in Azure; specficically in a Storage Account Container called: tfstate. We first need to create those resources:  
 
-  `# Create Resource Group`<br>
-  `az group create -n <rg-name> -l uksouth`<br>
-  <br>
-  `# Create Storage Account [Storage Account name needs to be globally unique]`<br>
-  `az storage account create -n <sa-name> -g <rg-name> -l uksouth --sku Standard_LRS`<br>
-  <br>
-  `# Create Storage Account Container`<br>
-  `az storage container create -n tfstate --account-name <sa-name>`<br><br>
+  `# Create Resource Group`  
+  `az group create -n <rg-name> -l uksouth`  
 
-* The Backend Block tells Terraform where to store the state. This is where the .tfstate file will be stored. This block should contain the detals of the Resource Group, Storage Account and Container Name you have created. The Key is the name of the Blob, in the Container, this is the state file. Create a file called "azurerm.tfbackend" in /main and add your specific backend details like below:
-<br>
-<br>
-![image](images/backend_block.png)
-<br>
-<br>
-* Users must be registered with the NASA Direct Readout Labratory (DRL) in order to download the RT-STPS and IPOPP Software. These same credentials are also used by IPOPP to retrieve ancillaries from the DRL’s real-time and archived ancillary repositories during ingestion. You can register [here](https://directreadout.sci.gsfc.nasa.gov/) . <br>
+  `# Create Storage Account [Storage Account name needs to be globally unique]`  
+  `az storage account create -n <sa-name> -g <rg-name> -l uksouth --sku Standard_LRS`  
 
-* This deployment assumes that you have downloaded the required software from the NASA DRL and stored it in a separate Storage Account (in the same Subscription) with a Container for each of RT-STPS and IPOPP as below:<br>
+  `# Create Storage Account Container`  
+  `az storage container create -n tfstate --account-name <sa-name>`  
+  
+* The Backend Block tells Terraform where to store the state. This is where the .tfstate file will be stored. This block should contain the detals of the Resource Group, Storage Account and Container Name you have created. The Key is the name of the Blob, in the Container, this is the state file. Create a file called "azurerm.tfbackend" in /main and add your specific backend details like below:  
 
-  `https://[storageaccountname].blob.core.windows.net/rt-stps`<br>
-  `/RT-STPS_7.0.tar.gz`<br>
-  `/RT-STPS_7.0_testdata.tar.gz`<br>
-  <br>
- `https://[storageaccountname].blob.core.windows.net/ipopp`<br>
-  `/DRL-IPOPP_4.1.tar.gz`<br>
-  `/DRL-IPOPP_4.1_PATCH_1.tar.gz`<br>
-  `/DRL-IPOPP_4.1_PATCH_2.tar.gz`<br>
-  <br>
+![image](images/backend_block.png)  
 
-* As we are running Terraform locally we will be authenticating using the Azure CLI: <br>
+* Users must be registered with the NASA Direct Readout Labratory (DRL) in order to download the RT-STPS and IPOPP Software. These same credentials are also used by IPOPP to retrieve ancillaries from the DRL’s real-time and archived ancillary repositories during ingestion. You can register [here](https://directreadout.sci.gsfc.nasa.gov/).
 
-  `# Login to Azure and set Subscription`<br>
-  `az login` <br>
-  `az account set --subscription <subscription-id>` <br>
-  <br>
-  `# Check Subscription`<br>
-  `az account show` <br>  
+* This deployment assumes that you have downloaded the required software from the NASA DRL and stored it in a separate Storage Account (in the same Subscription) with a Container for each of RT-STPS and IPOPP as below:  
 
-* We need to set some variables specific to your deployment of TCP to Blob, and the location of the NASA Processing Software. We will use a variable definition file called .tvfars. Create a file called ".tfvars" in /main and add your details: <br>
+  `# RT-STPS`  
+  `https://[storageaccountname].blob.core.windows.net/rt-stps`  
+  `/RT-STPS_7.0.tar.gz`  
+  `/RT-STPS_7.0_testdata.tar.gz`  
+
+  `# IPOPP`  
+  `https://[storageaccountname].blob.core.windows.net/ipopp`  
+  `/DRL-IPOPP_4.1.tar.gz`  
+  `/DRL-IPOPP_4.1_PATCH_1.tar.gz`  
+  `/DRL-IPOPP_4.1_PATCH_2.tar.gz`  
+
+* As we are running Terraform locally we will be authenticating using the Azure CLI:  
+
+  `# Login to Azure and set Subscription`  
+  `az login`  
+  `az account set --subscription <subscription-id>`  
+
+  `# Check Subscription`  
+  `az account show`  
+
+* We need to set some variables specific to your deployment of TCP to Blob, and the location of the NASA Processing Software. We will use a variable definition file called .tvfars. Create a file called ".tfvars" in /main and add your details:  
 
   `# Your .tfvars file should look something like this:`
-<br>
-<br>
-![image](images/tfvars_file.png)
-<br>
-<br>
 
-  `# .tfvars variable explanation`<br>
-  `BUILD_AGENT_IP: IP Address from where Terraform is running to add to the Storage Account Firewall.` <br>
-  `AQUA_TOOLS_RG: Resource Group that contains the Storage Account with the NASA DRL Tools.` <br>
-  `AQUA_TOOLS_SA: Storage Account Containing the NASA DRL Tools.` <br>
-  `rg_aqua_data_collection: Resource Group deployed by TCP to Blob. This deploys the additional resources for AQUA processing here.` <br>
-  `vnet_aqua_data_collection: vNET deployed by TCP to Blob. This deploys the additional resources for AQUA processing into new Subnets in this vNET.` <br>
-  `sa_data_collection: Storage Account deployed by TCP to Blob. This deploys an additional container here and creates a Managed Identity assigned to the VMs with RBAC access.` <br>
-<br>
+![image](images/tfvars_file.png)  
 
-* Finally, apply the Terraform: <br>
+* .tfvars variable explanation:  
+  `BUILD_AGENT_IP: IP Address from where Terraform is running to add to the Storage Account Firewall.`  
+  `AQUA_TOOLS_RG: Resource Group that contains the Storage Account with the NASA DRL Tools.`  
+  `AQUA_TOOLS_SA: Storage Account Containing the NASA DRL Tools.`  
+  `rg_aqua_data_collection: Resource Group deployed by TCP to Blob. This deploys the additional resources for AQUA processing here.`  
+  `vnet_aqua_data_collection: vNET deployed by TCP to Blob. This deploys the additional resources for AQUA processing into new Subnets in this vNET.`  
+  `sa_data_collection: Storage Account deployed by TCP to Blob. This deploys an additional container here and creates a Managed Identity assigned to the VMs with RBAC access.`  
 
-  `# Initialise and apply the Terraform`<br>
-    `cd main` <br>
-    `terraform init -backend-config=azurerm.tfbackend` <br>
-    `terraform plan -var-file=".tfvars"` <br>
-    `terraform apply -var-file=".tfvars -auto-approve"` <br>
-<br>
+* Finally, apply the Terraform:  
 
-# Explore and Verify
+  `# Initialise and apply the Terraform`  
+    `cd main`
+    `terraform init -backend-config=azurerm.tfbackend`  
+    `terraform plan -var-file=".tfvars"`  
+    `terraform apply -var-file=".tfvars -auto-approve"`  
 
-Once deployed it should look like this: <br>
-<br>
-<br>
+### Explore and Verify
+
+Once deployed it should look like this:  
+
 ![image](images/azure_aqua_processing.png)
-<br>
-<br>
 
 The TCP to Blob deployment will have already deployed the following resources:
 
@@ -168,16 +159,13 @@ Once this Terraform has subsequently been applied the following resources will a
 
 Deployment takes approximately 45 minutes, the vast majority of this being the installation of IPOPP.
 
-# Example Output
+### Example Output
 
-An example of the output that can be produced can be seen in the image below, a composite of a number of GEOTIFF's, displaying the Aqua Moderate Resolution Imaging Spectroradiometer (MODIS) NASA Level-2 (L2) Cloud Mask. The nominal spatial resolution of the Aqua MODIS L2 Cloud Mask is 1 km.
-<br>
-<br>
+An example of the output that can be produced can be seen in the image below, a composite of a number of GEOTIFF's, displaying the Aqua Moderate Resolution Imaging Spectroradiometer (MODIS) NASA Level-2 (L2) Cloud Mask. The nominal spatial resolution of the Aqua MODIS L2 Cloud Mask is 1 km.  
+
 ![image](images/geotiff_output.png)
-<br>
-<br>
 
-# Post Deployment Actions
+### Post Deployment Actions
 
 A couple of things are yet to be automated so need to be done manually:
 
