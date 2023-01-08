@@ -147,7 +147,7 @@ Once this Terraform has subsequently been applied the following resources will a
 
 * A Managed Identity is created and assigned access to the Storage Account that was created to store the NASA Software. This Managed Identity is attached to both the RT-STPS and IPOPP Virtual Machines that allows them to pull the software during the execution of Custom Script Extension.
 
-* A Container (shared) is added to the Storage Account that was created by TCP to Blob.
+* A Container (shared) is added to the Storage Account that was created by TCP to Blob. Both /raw-contact-data and /shared are blobfuse2 mounted on both VMs.
 
 * A Managed Identity is created and assigned access to the Storage Account that was created during the deployment of TCP to Blob. This Managed Identity is attached to both the RT-STPS and IPOPP VMs that allows them both to mount Containers after deployment.
 
@@ -170,4 +170,4 @@ An example of the output that can be produced can be seen in the image below, a 
 A couple of things are yet to be automated so need to be done manually:
 
 * A .netrc file containing NASA DRL credentials is required in the IPOPP user home directory.
-* Use blobfuse2 to mount /raw-contact-data and /shared containers deployed as part of TCP to Blob [documentation](https://github.com/Azure/azure-storage-fuse).
+* Update crontab to mount /raw-contact-data and /shared after reboot: > blobfuse2 mount all /bf2all --config-file=/opt/blob-fuse/config.yaml --allow-other
