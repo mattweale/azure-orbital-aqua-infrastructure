@@ -88,7 +88,7 @@ resource "azurerm_virtual_machine_extension" "cse_vm_orbital_ipopp_config" {
         "fileUris":["https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/mount_data_drive.sh",
                     "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/mount_container.sh",
                     "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/main_ipopp.sh",
-                    "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/ipopp_prereqs.sh",
+                    "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/prereqs_ipopp.sh",
                     "https://raw.githubusercontent.com/mattweale/azure-orbital-aqua-infrastructure/main/vm_configuration/install_ipopp.sh"]
     }
 SETTINGS
