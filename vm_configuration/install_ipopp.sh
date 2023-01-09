@@ -45,6 +45,10 @@
 	sudo mv /var/lib/waagent/custom_data/downloads/0/aqua_datachecker.py /nfsdata
 	sudo chmod 777 /nfsdata/aqua_datachecker.py 
 
+	#	Edit crontab to mount blobfuse on reboot
+	crontab -l | { cat; echo "@reboot yum upgrade -y"; } | crontab -
+	crontab -l | { cat; echo "@reboot blobfuse2 mount all /bf2all --config-file=/opt/blob-fuse/config.yaml"; } | crontab -
+
 # 	Verify
 	$INSTALL_DIR/drl/tools/services.sh status > status.log
 	$INSTALL_DIR/drl/tools/spa_services.sh status >> status.log

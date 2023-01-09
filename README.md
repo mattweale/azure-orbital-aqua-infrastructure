@@ -167,7 +167,4 @@ An example of the output that can be produced can be seen in the image below, a 
 
 ### Post Deployment Actions
 
-A couple of things are yet to be automated so need to be done manually:
-
 * A .netrc file containing NASA DRL credentials is required in the IPOPP user home directory.
-* Update crontab to mount /raw-contact-data and /shared after reboot: > blobfuse2 mount all /bf2all --config-file=/opt/blob-fuse/config.yaml --allow-other

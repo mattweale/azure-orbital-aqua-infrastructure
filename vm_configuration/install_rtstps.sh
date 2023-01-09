@@ -66,3 +66,8 @@
 	./rt-stps/jsw/bin/rt-stps-server.sh start
 	echo 'Start Viewer with: /datadrive/rt-stps/bin/viewer.sh &'
 	echo 'Start Sender with: /datadrive//rt-stps/bin/sender.sh &'
+
+	#	Edit crontab to mount blobfuse and start RT-STPS Server on reboot
+	crontab -l | { cat; echo "@reboot yum upgrade -y"; } | crontab -
+	crontab -l | { cat; echo "@reboot blobfuse2 mount all /bf2all --config-file=/opt/blob-fuse/config.yaml"; } | crontab -
+	crontab -l -u adminuser| { cat; echo "@reboot /datadrive/IPOPP/drl/tools/services.sh start"; } | crontab -u adminuser -
