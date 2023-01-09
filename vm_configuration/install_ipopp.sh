@@ -48,6 +48,7 @@
 	#	Edit crontab to mount blobfuse on reboot
 	crontab -l | { cat; echo "@reboot yum upgrade -y"; } | crontab -
 	crontab -l | { cat; echo "@reboot blobfuse2 mount all /bf2all --config-file=/opt/blob-fuse/config.yaml"; } | crontab -
+	crontab -l -u adminuser| { cat; echo "@reboot "/datadrive/IPOPP/drl/tools/services.sh start""; } | crontab -u adminuser -
 
 # 	Verify
 	$INSTALL_DIR/drl/tools/services.sh status > status.log
