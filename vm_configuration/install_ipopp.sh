@@ -51,4 +51,4 @@
 
 # 	Verify
 	$INSTALL_DIR/drl/tools/services.sh status > status.log
-	$INSTALL_DIR/drl/tools/spa_services.sh status >> status.log
+	$INSTALL_DIR/drl/tools/spa_services.sh status >> status.log	
